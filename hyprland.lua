@@ -18,10 +18,9 @@ hl.monitor({
 ---- MY PROGRAMS ----
 ---------------------
 
--- set programs that you use
+local browser = "firefox"
 local terminal = "ghostty"
 local menu = "hyprlauncher"
-local browser = "firefox"
 
 -------------------
 ---- AUTOSTART ----
@@ -29,14 +28,10 @@ local browser = "firefox"
 
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 
--- Autostart necessary processes (like notifications daemons, status bars, etc.)
--- Or execute your favorite apps at launch like this:
---
--- hl.on("hyprland.start", function ()
---   hl.exec_cmd(terminal)
---   hl.exec_cmd("nm-applet")
---   hl.exec_cmd("waybar & hyprpaper & firefox")
--- end)
+hl.on("hyprland.start", function()
+	-- hl.exec_cmd("waybar & hyprpaper")
+	hl.exec_cmd("hyprpaper")
+end)
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
@@ -198,7 +193,7 @@ hl.config({
 		kb_options = "",
 		kb_rules = "",
 
-		sensitivity = -0.5,
+		sensitivity = -1,
 		numlock_by_default = true,
 
 		touchpad = {
@@ -226,7 +221,9 @@ local function combo(...)
 end
 
 -- https://wiki.hypr.land/Configuring/Basics/Binds/
+hl.bind(combo("SUPER", "B"), hl.dsp.exec_cmd(browser))
 hl.bind(combo("SUPER", "G"), hl.dsp.exec_cmd(terminal))
+hl.bind(combo("SUPER", "W"), hl.dsp.window.close())
 hl.bind(combo("SUPER", "V"), hl.dsp.window.float({ action = "toggle" }))
 hl.bind(combo("SUPER", "R"), hl.dsp.exec_cmd(menu))
 hl.bind(combo("SUPER", "P"), hl.dsp.window.pseudo())
@@ -257,35 +254,11 @@ hl.bind(combo("SUPER", "SHIFT", "S"), hl.dsp.window.move({ workspace = "special:
 hl.bind(combo("SUPER", "mouse:272"), hl.dsp.window.drag(), { mouse = true })
 hl.bind(combo("SUPER", "mouse:273"), hl.dsp.window.resize(), { mouse = true })
 
--- laptop multimedia keys for volume and LCD brightness
+-- screenshot
 hl.bind(
-	"XF86AudioRaiseVolume",
-	hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"),
-	{ locked = true, repeating = true }
+	combo("SUPER", "SHIFT", "P"),
+	hl.dsp.exec_cmd('grim - | satty -f - --copy-command wl-copy -o "~/images/screenshots/%Y%m%d_%H%M%S.png"')
 )
-hl.bind(
-	"XF86AudioLowerVolume",
-	hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
-	{ locked = true, repeating = true }
-)
-hl.bind(
-	"XF86AudioMute",
-	hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),
-	{ locked = true, repeating = true }
-)
-hl.bind(
-	"XF86AudioMicMute",
-	hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),
-	{ locked = true, repeating = true }
-)
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"), { locked = true, repeating = true })
-
--- Requires playerctl
-hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
